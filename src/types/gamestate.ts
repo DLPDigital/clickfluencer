@@ -1,4 +1,4 @@
-export type GameState = {
+export interface GameState {
   posts?: number
   likes?: number
   followers?: number

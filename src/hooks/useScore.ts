@@ -1,14 +1,26 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react'
 
-export const useScore = () => {
-  const [score, setScore] = useState<number>(() => {
-    const scoreFromStorage = localStorage.getItem("score");
-    return scoreFromStorage ? parseInt(scoreFromStorage, 10) : 0;
-  });
+const useScore = (): [number, (newScore: number) => void] => {
+  const [score, setScore] = useState<number>(0)
 
   useEffect(() => {
-    localStorage.setItem("score", score.toString());
-  }, [score]);
+    if (typeof window !== 'undefined') {
+      const scoreFromStorage = JSON.parse(localStorage.getItem('score') || '0')
+      setScore(scoreFromStorage)
+    }
+  }, [])
 
-  return [score, setScore] as const;
-};
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('score', JSON.stringify(score))
+    }
+  }, [score])
+
+  const handleScoreUpdate = (newScore: number) => {
+    setScore(newScore)
+  }
+
+  return [score, handleScoreUpdate]
+}
+
+export { useScore }

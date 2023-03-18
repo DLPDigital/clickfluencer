@@ -1,7 +1,7 @@
-import { GameState } from "@/types/gamestate";
+import { type GameState } from "@/types/gamestate";
 
-type HandlePostProps = {
-  posts: number;
+interface HandlePostProps {
+  posts: number | undefined;
   setPosts: (posts: number) => void;
   likes: number;
   setLikes: (likes: number) => void;
@@ -11,7 +11,7 @@ type HandlePostProps = {
   setState: (state: GameState) => void;
   score: number;
   setScore: (score: number) => void;
-};
+}
 
 const handlePost = ({
   posts,
@@ -25,46 +25,31 @@ const handlePost = ({
   score,
   setScore,
 }: HandlePostProps) => {
-  const newLikes = Math.floor(Math.random() * (10 - 5 + 1)) + 5;
-  const followerQuality = Math.floor(Math.random() * 10) + 1;
-
-  setPosts(posts + 1);
-  setLikes(likes + newLikes);
-  setState({
-    lastFollowerLikes: likes,
+  console.log("state = ", state);
+  const postsFromStorage = JSON.parse(localStorage.getItem("posts") || "0")
+  const initialPosts = postsFromStorage || posts
+  console.log('postsFromStorage = ', postsFromStorage)
+  console.log('initialPosts = ', initialPosts)
+  const newPosts = posts ? posts + 1 : 1
+  const newLikes = likes + followers;
+  const newFollowers = Math.floor(newLikes / 10);
+  const newState = {
     lastFollowerCount: followers,
-  });
+    lastFollowerLikes: newLikes - likes,
+  };
+  const newScore = score + newFollowers;
 
-  if (likes - state.lastFollowerLikes >= 10) {
-    let newFollowers = 0;
+  setPosts(newPosts);
+  setLikes(newLikes);
+  setFollowers(newFollowers);
+  setState(newState);
+  setScore(newScore);
 
-    if (followerQuality <= 3) {
-      newFollowers = Math.floor(Math.random() * 1) + 1;
-    } else if (followerQuality <= 7) {
-      newFollowers = Math.floor(Math.random() * (3 - 1 + 1)) + 1;
-    } else {
-      newFollowers = Math.floor(Math.random() * (5 - 3 + 1)) + 3;
-    }
-
-    setFollowers(followers + newFollowers);
-    setState({
-      lastFollowerLikes: likes,
-      lastFollowerCount: followers + newFollowers,
-    });
-  }
-
-  setScore(score + newLikes);
-  localStorage.setItem("posts", (posts + 1).toString());
-  localStorage.setItem("likes", (likes + newLikes).toString());
-  localStorage.setItem("followers", followers.toString());
-  localStorage.setItem(
-    "state",
-    JSON.stringify({
-      lastFollowerLikes: likes,
-      lastFollowerCount: followers,
-    })
-  );
-  localStorage.setItem("score", (score + newLikes).toString());
+  localStorage.setItem("posts", JSON.stringify(newPosts));
+  localStorage.setItem("likes", JSON.stringify(newLikes));
+  localStorage.setItem("followers", JSON.stringify(newFollowers));
+  localStorage.setItem("state", JSON.stringify(newState));
+  localStorage.setItem("score", JSON.stringify(newScore));
 };
 
 export default handlePost;
