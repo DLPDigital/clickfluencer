@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { GameState } from "@/types/gamestate";
 
 type HandlePostProps = {
@@ -54,13 +53,18 @@ const handlePost = ({
     });
   }
 
-  setScore(score);
-  localStorage.setItem("posts", JSON.stringify(posts));
-  localStorage.setItem("likes", JSON.stringify(likes));
-  localStorage.setItem("followers", JSON.stringify(followers));
-  localStorage.setItem("state", JSON.stringify(state));
-  localStorage.setItem("score", JSON.stringify(score));
-  
+  setScore(score + newLikes);
+  localStorage.setItem("posts", (posts + 1).toString());
+  localStorage.setItem("likes", (likes + newLikes).toString());
+  localStorage.setItem("followers", followers.toString());
+  localStorage.setItem(
+    "state",
+    JSON.stringify({
+      lastFollowerLikes: likes,
+      lastFollowerCount: followers,
+    })
+  );
+  localStorage.setItem("score", (score + newLikes).toString());
 };
 
 export default handlePost;
