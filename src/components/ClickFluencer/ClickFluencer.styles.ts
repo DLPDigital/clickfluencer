@@ -18,6 +18,7 @@ export const Title = chakra(Box, {
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: "2rem",
+    border: "solid 2px red",
   },
 })
 
