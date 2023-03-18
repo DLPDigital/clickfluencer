@@ -1,4 +1,5 @@
 import { type GameState } from "@/types/gamestate";
+import generatePost from "./postGenerator";
 
 interface HandlePostProps {
   posts: number | undefined;
@@ -9,8 +10,8 @@ interface HandlePostProps {
   setFollowers: (followers: number) => void;
   state: GameState;
   setState: (state: GameState) => void;
-  // score: number;
-  // setScore: (score: number) => void;
+  contentFeed: string[];
+  setContentFeed: (contentFeed: string[]) => void;
 }
 
 const handlePost = ({
@@ -22,11 +23,9 @@ const handlePost = ({
   setFollowers,
   state,
   setState,
-  // score,
-  // setScore,
+  contentFeed,
+  setContentFeed,
 }: HandlePostProps) => {
-  console.log('likes = ', likes)
-  console.log('followers = ', followers)
   console.log("state = ", state);
   const newPosts = posts ? posts + 1 : 1;
   const newLikes = Math.floor(Math.random() * 18) + 3;
@@ -37,25 +36,21 @@ const handlePost = ({
     lastFollowerCount: totalFollowers,
     lastFollowerLikes: totalLikes - newLikes,
   };
-  // const newScore = score + newFollowers;
+
+  const updatedContentFeed = [generatePost(), ...contentFeed]
+  console.log('updatedContentFeed = ', updatedContentFeed)
 
   setPosts(newPosts);
   setLikes(totalLikes);
   setFollowers(totalFollowers);
   setState(newState);
-  // setScore(newScore);
-
-  console.log("newPosts = ", newPosts);
-  console.log("newLikes = ", newLikes);
-  console.log("newFollowers = ", newFollowers);
-  console.log("newState = ", newState);
-  // console.log("newScore = ", newScore);
+  setContentFeed(updatedContentFeed)
 
   localStorage.setItem("posts", JSON.stringify(newPosts));
   localStorage.setItem("likes", JSON.stringify(totalLikes));
   localStorage.setItem("followers", JSON.stringify(totalFollowers));
   localStorage.setItem("state", JSON.stringify(newState));
-  // localStorage.setItem("score", JSON.stringify(newScore));
+  localStorage.setItem("contentFeed", JSON.stringify(updatedContentFeed))
 };
 
 export default handlePost;

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Container, Title, Alert } from "./ClickFluencer.styles";
 import { type GameState } from "@/types/gamestate";
-import StyledButton from "../Button/StyledButton";
 import handlePost from "@/utils/handlePost";
 import handleClear from "@/utils/handleClear";
+import { TabbedContent } from "../TabbedContent";
+import Feed from "../Feed";
 
 const ClickFluencer: React.FC = () => {
   const [posts, setPosts] = useState<number | undefined>(undefined);
@@ -13,6 +14,8 @@ const ClickFluencer: React.FC = () => {
     lastFollowerLikes: 0,
     lastFollowerCount: 0,
   });
+  const [contentFeed, setContentFeed] = useState<string[]>([""])
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     const postsFromStorage = JSON.parse(localStorage.getItem("posts") || "0");
@@ -21,10 +24,15 @@ const ClickFluencer: React.FC = () => {
     setLikes(likesFromStorage)
     const followersFromStorage = JSON.parse(localStorage.getItem("followers") || "0");
     setFollowers(followersFromStorage)
+    const contentFeedFromStorage = JSON.parse(localStorage.getItem("contentFeed") ?? "[]");
+    if (contentFeedFromStorage !== null) {
+      setContentFeed(contentFeedFromStorage)
+    }
   }, []);
 
   const handlePostClick = () => {
     console.log("click, posts = ", posts);
+    console.log("contentFeed = ", contentFeed);
     handlePost({
       posts,
       setPosts,
@@ -34,8 +42,27 @@ const ClickFluencer: React.FC = () => {
       setFollowers,
       state,
       setState,
+      contentFeed,
+      setContentFeed,
     });
   };
+
+  const timeDelay = 500
+
+  const handlePostClickDelay = () => {
+    setProgress(0);
+    const interval = setInterval(() => {
+      setProgress((prevProgress) => {
+        if (prevProgress >= 100) {
+          clearInterval(interval);
+          handlePostClick();
+          return 0;
+        }
+        return prevProgress + 1;
+      });
+    }, (timeDelay / 100));
+  };
+  
 
   const handleClearClick = () => {
     handleClear({
@@ -43,6 +70,7 @@ const ClickFluencer: React.FC = () => {
       setLikes,
       setFollowers,
       setState,
+      setContentFeed,
       state,
     });
   };
@@ -50,14 +78,17 @@ const ClickFluencer: React.FC = () => {
   return (
     <Container>
       <Title>Welcome to Click-Fluencer</Title>
-      <StyledButton onClick={handlePostClick}>Post</StyledButton>
-      <div>
-        <p>Posts: {posts}</p>
-        <p>Likes: {likes}</p>
-        <p>Followers: {followers}</p>
-        {followers > 0 && <p>Last follower at: {state.lastFollowerLikes}</p>}
-        <StyledButton onClick={handleClearClick}>Reset</StyledButton>
-      </div>
+      <h1>asd</h1>
+      <TabbedContent
+        handlePostClickDelay={handlePostClickDelay}
+        posts={posts}
+        likes={likes}
+        followers={followers}
+        state={state}
+        handleClearClick={handleClearClick}
+        progress={progress}
+      />
+      <Feed posts={contentFeed} />
       {followers > 0 && (
         <Alert>
           Congratulations! You now have {followers} new{" "}

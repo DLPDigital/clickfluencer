@@ -5,6 +5,7 @@ interface HandleClearProps {
   setLikes: (likes: number) => void;
   setFollowers: (followers: number) => void;
   setState: (state: GameState) => void;
+  setContentFeed: (contentFeed: string[]) => void;
   state: GameState;
 }
 
@@ -13,11 +14,13 @@ const handleClear = ({
   setLikes,
   setFollowers,
   setState,
+  setContentFeed,
   state,
 }: HandleClearProps) => {
   setPosts(0);
   setLikes(0);
   setFollowers(0);
+  setContentFeed([])
   setState({
     lastFollowerLikes: state.lastFollowerLikes,
     lastFollowerCount: state.lastFollowerCount,
@@ -27,6 +30,7 @@ const handleClear = ({
   localStorage.removeItem("followers");
   localStorage.removeItem("state");
   localStorage.removeItem("score");
+  localStorage.removeItem("contentFeed");
   localStorage.clear();
 };
 

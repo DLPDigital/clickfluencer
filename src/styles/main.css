@@ -1,0 +1,11 @@
+/* styles.css */
+
+progress {
+  display: block;
+  margin: 12px auto;
+  width: 200px;
+  height: 40px;
+  background-color: transparent;
+  transition: width 0.5s ease;
+}
+

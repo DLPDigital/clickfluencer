@@ -1,6 +1,8 @@
+import ClickFluencer from "@/components/ClickFluencer";
 import React from "react";
-const Home = () => {
-  return <div>Welcome to Click-fluencer!</div>;
+
+const HomePage = () => {
+  return <ClickFluencer />
 };
 
-export default Home;
+export default HomePage;

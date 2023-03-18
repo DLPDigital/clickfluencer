@@ -1,11 +1,10 @@
 import React from "react";
 import type { AppProps } from "next/app";
-import ClickFluencer from "../components/ClickFluencer/index";
+import "../styles/main.css"
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
-      <ClickFluencer />
       <Component {...pageProps} />
     </>
   );
